@@ -17,7 +17,7 @@ var $ = window.jQuery;
         data.append("data", JSON.stringify(autorize));
 
            $.ajax({
-              url: 'http://localhost:8000/',
+              url: 'http://18.217.243.109:8000/',
               type: 'POST',
               data: data,
               cache: false,
