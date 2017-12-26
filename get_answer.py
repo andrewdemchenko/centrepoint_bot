@@ -29,5 +29,3 @@ def answer(text):
 
 translator = Translator()
 ai = apiai.ApiAI('ab9b502a79c345f9b51f1a83dbdcc053')
-
-# answer = answer(u'مرحبا')
