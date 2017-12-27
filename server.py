@@ -3,8 +3,10 @@ import json
 import tornado.web
 import tornado.ioloop
 
-from send_email import email as lol
 from get_answer import answer
+from location import find_near
+from send_email import email as send
+from location import validate_location
 from validate_email import validate_email
 
 
@@ -18,11 +20,14 @@ class MainHandler(tornado.web.RequestHandler):
 
         message = data.get('url')
         email = validate_email(message, verify=True)
-        print email
+        location = validate_location(message)
 
         if email == True:
-            lol(message)
+            send(message)
             result = 'Thank you. Our support will contact to you soon.'
+        elif location != None:
+            result = 'This is location'
+            find_near(location)
         else:
             try:
                 result = answer(message)

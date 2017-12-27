@@ -10,9 +10,10 @@ def email(email):
     msg = '\r\n'.join([
         'From: {}'.format(support),
         'To: {}'.format(user),
-        'Subject: User Support',
+        'Subject: Customer Support Center',
         '',
-        'This user {} have some questions. Contact it, please.'.format(user)
+        'Hi! Centrepoint Bot report that you have some questions.'
+        'We will be happy to help you with it. Can you describe your problem?'.format(user)
     ])
 
     server = smtplib.SMTP('smtp.gmail.com:587')

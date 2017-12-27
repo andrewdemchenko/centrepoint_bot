@@ -18,7 +18,7 @@ var $ = window.jQuery;
 
            $.ajax({
            //18.217.243.109
-              url: 'http://18.217.243.109:8000/',
+              url: 'http://localhost:8000/',
               type: 'POST',
               data: data,
               cache: false,
