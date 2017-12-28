@@ -26,8 +26,8 @@ class MainHandler(tornado.web.RequestHandler):
             send(message)
             result = 'Thank you. Our support will contact to you soon.'
         elif location != None:
-            result = 'This is location'
-            find_near(location)
+            data = find_near(location)
+            result = 'The nearest Centrepoint is in {} only at {} kilometers from you'.format(data[2], round(data[6], 2))
         else:
             try:
                 result = answer(message)
