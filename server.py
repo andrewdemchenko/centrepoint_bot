@@ -39,7 +39,7 @@ class MainHandler(tornado.web.RequestHandler):
         if email == True:
             send(message)
             result = 'Thank you. Our support will contact to you soon.'
-        elif location != None and len(message) >= 5:
+        elif location != None and message.title() not in hello:
             data = find_near(location)
             result = 'The nearest Centrepoint is in {} only at {} kilometers from you'.format(data[2], round(data[6], 2))
         else:
@@ -55,10 +55,12 @@ class MainHandler(tornado.web.RequestHandler):
 
         self.write(json.dumps({'result': [result]}))
 
+translator = Translator()
+
+hello = ['Hello', 'Good Day', 'Hi', 'Greetings']
 
 settings = {'static_path': os.path.join(os.path.dirname(__file__), "static"),
             'debug': True, }
-translator = Translator()
 
 application = tornado.web.Application([
     (r"/", MainHandler),

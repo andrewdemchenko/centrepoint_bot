@@ -11,4 +11,5 @@ def answer(text):
 
     return result
 
+
 ai = apiai.ApiAI('ab9b502a79c345f9b51f1a83dbdcc053')
