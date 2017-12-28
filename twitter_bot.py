@@ -45,4 +45,4 @@ api = tweepy.API(auth)
 i = '@mecsikanamama'
 
 i = i.rstrip()
-s = api.direct_messages()
+s = api.sent_direct_messages('@mecsikanamama', 'hello')
