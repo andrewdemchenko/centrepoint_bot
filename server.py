@@ -22,7 +22,10 @@ class MainHandler(tornado.web.RequestHandler):
 
         message = data.get('url')
 
-        language = detect(message)
+        try:
+            language = detect(message)
+        except Exception:
+            language = 'en'
 
         print language
 
@@ -39,7 +42,7 @@ class MainHandler(tornado.web.RequestHandler):
         if email == True:
             send(message)
             result = 'Thank you. Our support will contact to you soon.'
-        elif location != None and message.title() not in hello:
+        elif location != None and message.title() not in hello and len(message) > 5:
             data = find_near(location)
             result = 'The nearest Centrepoint is in {} only at {} kilometers from you'.format(data[2], round(data[6], 2))
         else:

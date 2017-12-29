@@ -101,4 +101,4 @@ hello = ['Hello', 'Good Day', 'Hi', 'Greetings']
 ai = apiai.ApiAI('ab9b502a79c345f9b51f1a83dbdcc053')
 data = pd.read_excel('./data/location.xlsx').as_matrix().tolist()
 
-print get_answer(u'Hello')
+print get_answer(u'hmmm')
