@@ -27,14 +27,10 @@ class MainHandler(tornado.web.RequestHandler):
         except Exception:
             language = 'en'
 
-        print language
-
         if language == 'ar':
             message = translator.translate(message, dest='en', src='ar').text
         else:
             pass
-
-        print message
 
         email = validate_email(message, verify=True)
         location = validate_location(message)

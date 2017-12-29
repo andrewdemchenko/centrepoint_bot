@@ -15,6 +15,7 @@ def find_near(location):
 
     for i in data:
         distance = vincenty((lat, long), (i[3], i[4])).kilometers
+        print u'{} {}\n'.format(location, distance)
         i.append(distance)
 
         if float(temp[6]) > distance:
