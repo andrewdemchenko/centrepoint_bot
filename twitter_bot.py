@@ -101,7 +101,6 @@ def get_answer(message):
 
 geolocator = Nominatim()
 translator = Translator()
-message = pd.read_excel('./data/message.xlsx')
 hello = ['Hello', 'Good Day', 'Hi', 'Greetings']
 ai = apiai.ApiAI('ab9b502a79c345f9b51f1a83dbdcc053')
 location = pd.read_excel('./data/location.xlsx').as_matrix().tolist()
@@ -117,6 +116,7 @@ api = tweepy.API(auth)
 
 while True:
     responces = api.direct_messages()
+    message = pd.read_excel('./data/message.xlsx')
 
     for responce in responces:
         id = responce.id
