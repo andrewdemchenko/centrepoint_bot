@@ -84,7 +84,7 @@ def get_answer(message):
     if email == True:
         send_email(message)
         result = 'Thank you. Our support will contact to you soon.'
-    elif location != None and message.title() not in hello:
+    elif location != None and message.title() not in hello and len(message) > 5:
         data = find_near(location)
         result = 'The nearest Centrepoint is in {} only at {} kilometers from you'.format(data[2], round(data[6], 2))
     else:
@@ -123,10 +123,14 @@ while True:
         text = responce.text
         sender = responce.sender.screen_name
 
-        if id not in message['id'].as_matrix().tolist():
-            send = api.send_direct_message(user=sender, text=get_answer(text))
+        if str(id) not in message['id'].as_matrix().tolist():
+            try:
+                print 'Send message to @{}'.format(sender)
+                send = api.send_direct_message(user=sender, text=get_answer(text))
 
-            message.loc[len(message)] = [sender, str(id), text]
-            message.to_excel('./data/message.xlsx')
+                message.loc[len(message)] = [sender, str(id), text]
+                message.to_excel('./data/message.xlsx')
+            except Exception:
+                print 'Limit error\n'
         else:
             continue
