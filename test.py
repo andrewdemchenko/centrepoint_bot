@@ -4,6 +4,7 @@ from __future__ import absolute_import, print_function
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
+from tweepy import error
 from tweepy import API
 
 import json
@@ -53,7 +54,6 @@ def validate_location(location):
 
 def find_near(location):
     lat, long = location.latitude, location.longitude
-    print (lat, long)
 
     temp = ['Country', 'City', 'Street', 'Lat', 'Long', 'Time', 1000000]
 
@@ -116,14 +116,14 @@ class EventListener(StreamListener):
             sender = data.get('direct_message').get('sender').get('screen_name')
             question = data.get('direct_message').get('text')
 
-            try:
-                api.send_direct_message(user=sender, text=get_answer(question))
+            if sender != 'stark_man_usa':
+                try:
+                    api.send_direct_message(user=sender, text=get_answer(question))
 
-                print('Sender: ', sender)
-                print('Question: ', question)
-                print('Answer: ', question)
-            except Exception:
-                print('*--- Rate limit ---*', '\n')
+                    print('Sender: ', sender)
+                    print('Question: ', question, '\n')
+                except error.RateLimitError:
+                    print('*--- Rate limit ---*', '\n')
 
         except Exception:
             print ('*--- Another user activity on the page ---*', '\n')
@@ -146,7 +146,7 @@ listener = EventListener()
 auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
-api = API(auth)
+api = API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 stream = Stream(auth, listener)
 stream.userstream()
