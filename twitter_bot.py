@@ -93,7 +93,7 @@ def get_answer(message):
     if email == True:
         send_email(message)
         result = 'Thank you. Our support will contact to you soon.'
-    elif location != None and message.title() not in hello and len(message) > 10:
+    elif location != None and message.title() and len(message) > 10:
         data = find_near(location)
         result = 'The nearest Centrepoint is in {} only at {} kilometers from you. {}'.format(data[2], round(data[6], 2), data[5])
     else:
@@ -136,7 +136,6 @@ class EventListener(StreamListener):
 
 geolocator = Nominatim()
 translator = Translator()
-hello = ['Hello', 'Good Day', 'Hi', 'Greetings']
 ai = apiai.ApiAI('ab9b502a79c345f9b51f1a83dbdcc053')
 data = pd.read_excel('./data/location.xlsx').as_matrix().tolist()
 
@@ -148,5 +147,9 @@ auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
 api = API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-stream = Stream(auth, listener)
-stream.userstream()
+while True:
+    try:
+        stream = Stream(auth, listener)
+        stream.userstream()
+    except Exception:
+        pass
