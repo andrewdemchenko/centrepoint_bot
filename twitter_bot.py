@@ -1,8 +1,14 @@
-# !/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, print_function
+
+from tweepy.streaming import StreamListener
+from tweepy import OAuthHandler
+from tweepy import Stream
+from tweepy import error
+from tweepy import API
+
 import json
 import apiai
-import tweepy
 import smtplib
 import pandas as pd
 
@@ -11,6 +17,12 @@ from googletrans import Translator
 from geopy.distance import vincenty
 from geopy.geocoders import Nominatim
 from validate_email import validate_email
+
+CONSUMER_KEY = 'tvk6XXU4BPhDKbYJ26oeIvfsZ'
+CONSUMER_SECRET = 'KpLX5OKglaBAvLwNt67CDqm6w8W6aBUIW4p1jp23JtwexGsLKV'
+
+ACCESS_TOKEN = '372811570-cPDw7F4CQPEy4JoRH1LgHB6iAWdGoJRUkf8hXR5v'
+ACCESS_TOKEN_SECRET = '0HfKQHqYA2NBi1kZ1km3yyeyoQNxWMcyE0SxYpU8XTNdO'
 
 
 def send_email(email):
@@ -45,12 +57,9 @@ def find_near(location):
 
     temp = ['Country', 'City', 'Street', 'Lat', 'Long', 'Time', 1000000]
 
-    for i in location:
-        try:
-            distance = vincenty((lat, long), (i[3], i[4])).kilometers
-            i.append(distance)
-        except Exception:
-            distance = temp[6]
+    for i in data:
+        distance = vincenty((lat, long), (i[3], i[4])).kilometers
+        i.append(distance)
 
         if float(temp[6]) > distance:
             temp = i
@@ -78,15 +87,15 @@ def get_answer(message):
     if language == 'ar':
         message = translator.translate(message, dest='en', src='ar').text
 
-    email = validate_email(message, verify=True)
+    email = validate_email(message)
     location = validate_location(message)
 
     if email == True:
         send_email(message)
         result = 'Thank you. Our support will contact to you soon.'
-    elif location != None and message.title() not in hello and len(message) > 5:
+    elif location != None and message.title() not in hello and len(message) > 10:
         data = find_near(location)
-        result = 'The nearest Centrepoint is in {} only at {} kilometers from you'.format(data[2], round(data[6], 2))
+        result = 'The nearest Centrepoint is in {} only at {} kilometers from you. {}'.format(data[2], round(data[6], 2), data[5])
     else:
         try:
             result = answer(message)
@@ -99,38 +108,45 @@ def get_answer(message):
     return result
 
 
+class EventListener(StreamListener):
+    def on_data(self, data):
+        data = (json.loads(data))
+
+        try:
+            sender = data.get('direct_message').get('sender').get('screen_name')
+            question = data.get('direct_message').get('text')
+
+            if sender != 'CentrepointME':
+                try:
+                    api.send_direct_message(user=sender, text=get_answer(question))
+
+                    print('Sender: ', sender)
+                    print('Question: ', question, '\n')
+                except error.RateLimitError:
+                    print('*--- Rate limit ---*', '\n')
+
+        except Exception:
+            print ('*--- Another user activity on the page ---*', '\n')
+
+        return True
+
+    def on_error(self, status):
+        print(status)
+
+
 geolocator = Nominatim()
 translator = Translator()
 hello = ['Hello', 'Good Day', 'Hi', 'Greetings']
 ai = apiai.ApiAI('ab9b502a79c345f9b51f1a83dbdcc053')
-location = pd.read_excel('./data/location.xlsx').as_matrix().tolist()
+data = pd.read_excel('./data/location.xlsx').as_matrix().tolist()
 
-CONSUMER_KEY = 'ChZZ5nDwuyteOF0muX1wlEY9T'
-CONSUMER_SECRET = 'pRetooDE7La5AlDVaGuBYCIN2kzbBi0Cv4i9oEx57hWVy5LERq'
-ACCESS_TOKEN = '1701503700-KptPGwrh9dGxgWZDiRjVz9Ok6GDkZ9d0KBd20ip'
-ACCESS_TOKEN_SECRET = '8CcOHvQEPOgH58fNmFnl99GjGMbkcl2gEjxxZNNdaATfG'
 
-auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+listener = EventListener()
+
+auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-api = tweepy.API(auth)
 
-while True:
-    responces = api.direct_messages()
-    message = pd.read_excel('./data/message.xlsx')
+api = API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-    for responce in responces:
-        id = responce.id
-        text = responce.text
-        sender = responce.sender.screen_name
-
-        if str(id) not in message['id'].as_matrix().tolist():
-            try:
-                print 'Send message to @{}'.format(sender)
-                send = api.send_direct_message(user=sender, text=get_answer(text))
-
-                message.loc[len(message)] = [sender, str(id), text]
-                message.to_excel('./data/message.xlsx')
-            except Exception:
-                print 'Limit error\n'
-        else:
-            continue
+stream = Stream(auth, listener)
+stream.userstream()
