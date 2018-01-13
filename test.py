@@ -87,13 +87,13 @@ def get_answer(message):
     if language == 'ar':
         message = translator.translate(message, dest='en', src='ar').text
 
-    email = validate_email(message, verify=True)
+    email = validate_email(message)
     location = validate_location(message)
 
     if email == True:
         send_email(message)
         result = 'Thank you. Our support will contact to you soon.'
-    elif location != None and message.title() not in hello and len(message) > 5:
+    elif location != None and message.title() not in hello and len(message) > 10:
         data = find_near(location)
         result = 'The nearest Centrepoint is in {} only at {} kilometers from you'.format(data[2], round(data[6], 2))
     else:
