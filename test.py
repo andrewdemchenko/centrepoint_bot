@@ -18,11 +18,11 @@ from geopy.distance import vincenty
 from geopy.geocoders import Nominatim
 from validate_email import validate_email
 
-CONSUMER_KEY = 'ChZZ5nDwuyteOF0muX1wlEY9T'
-CONSUMER_SECRET = 'pRetooDE7La5AlDVaGuBYCIN2kzbBi0Cv4i9oEx57hWVy5LERq'
+CONSUMER_KEY = 'tvk6XXU4BPhDKbYJ26oeIvfsZ'
+CONSUMER_SECRET = 'KpLX5OKglaBAvLwNt67CDqm6w8W6aBUIW4p1jp23JtwexGsLKV'
 
-ACCESS_TOKEN = '1701503700-KptPGwrh9dGxgWZDiRjVz9Ok6GDkZ9d0KBd20ip'
-ACCESS_TOKEN_SECRET = '8CcOHvQEPOgH58fNmFnl99GjGMbkcl2gEjxxZNNdaATfG'
+ACCESS_TOKEN = '372811570-cPDw7F4CQPEy4JoRH1LgHB6iAWdGoJRUkf8hXR5v'
+ACCESS_TOKEN_SECRET = '0HfKQHqYA2NBi1kZ1km3yyeyoQNxWMcyE0SxYpU8XTNdO'
 
 
 def send_email(email):
@@ -116,7 +116,7 @@ class EventListener(StreamListener):
             sender = data.get('direct_message').get('sender').get('screen_name')
             question = data.get('direct_message').get('text')
 
-            if sender != 'stark_man_usa':
+            if sender != 'CentrepointME':
                 try:
                     api.send_direct_message(user=sender, text=get_answer(question))
 
