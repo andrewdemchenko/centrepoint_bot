@@ -28,7 +28,7 @@ ACCESS_TOKEN_SECRET = '0HfKQHqYA2NBi1kZ1km3yyeyoQNxWMcyE0SxYpU8XTNdO'
 def send_email(sender, email):
     bot = 'centrepointbot@gmail.com'
     user = email
-    support1 = 't.malak@ipn.ae'
+    support1 = 'sachinkumarrjain@gmail.com'
     support2 = 'shalini.sharma@landmarkgroup.com'
 
     password = 'qwerty678606'
