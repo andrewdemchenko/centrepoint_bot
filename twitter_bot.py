@@ -28,8 +28,8 @@ ACCESS_TOKEN_SECRET = '0HfKQHqYA2NBi1kZ1km3yyeyoQNxWMcyE0SxYpU8XTNdO'
 def send_email(sender, email):
     bot = 'centrepointbot@gmail.com'
     user = email
-    support1 = 'nordstone333@gmail.com'
-    support2 = 'sachinkumarrjain@gmail.com'
+    support1 = 't.malak@ipn.ae'
+    support2 = 'shalini.sharma@landmarkgroup.com'
 
     password = 'qwerty678606'
 
@@ -38,7 +38,7 @@ def send_email(sender, email):
         'To: {}'.format(support1),
         'Subject: Centrepoint Bot Report',
         '',
-        'Twitter: {}({}) have some questions. Write to him, please.'.format(sender, user)
+        'Twitter: User {}({}) have some questions. Please, address the same at the earliest.'.format(sender, user)
     ])
 
     msg2 = '\r\n'.join([
@@ -46,7 +46,7 @@ def send_email(sender, email):
         'To: {}'.format(support1),
         'Subject: Centrepoint Bot Report',
         '',
-        'Twitter: {} have some questions. Write to him, please.'.format(user)
+        'Twitter: User {}({}) have some questions. Please, address the same at the earliest.'.format(sender, user)
     ])
 
     server = smtplib.SMTP('smtp.gmail.com:587')
