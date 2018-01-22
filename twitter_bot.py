@@ -25,26 +25,36 @@ ACCESS_TOKEN = '372811570-cPDw7F4CQPEy4JoRH1LgHB6iAWdGoJRUkf8hXR5v'
 ACCESS_TOKEN_SECRET = '0HfKQHqYA2NBi1kZ1km3yyeyoQNxWMcyE0SxYpU8XTNdO'
 
 
-def send_email(email):
+def send_email(sender, email):
     bot = 'centrepointbot@gmail.com'
     user = email
-    support = 'nordstone333@gmail.com'
+    support1 = 'nordstone333@gmail.com'
+    support2 = 'sachinkumarrjain@gmail.com'
 
     password = 'qwerty678606'
 
-    msg = '\r\n'.join([
+    msg1 = '\r\n'.join([
         'From: {}'.format(bot),
-        'To: {}'.format(support),
+        'To: {}'.format(support1),
         'Subject: Centrepoint Bot Report',
         '',
-        'Hi! {} have some questions. Write to him, please.'.format(user)
+        'Twitter: {}({}) have some questions. Write to him, please.'.format(sender, user)
+    ])
+
+    msg2 = '\r\n'.join([
+        'From: {}'.format(bot),
+        'To: {}'.format(support1),
+        'Subject: Centrepoint Bot Report',
+        '',
+        'Twitter: {} have some questions. Write to him, please.'.format(user)
     ])
 
     server = smtplib.SMTP('smtp.gmail.com:587')
     server.ehlo_or_helo_if_needed()
     server.starttls()
     server.login(bot, password)
-    server.sendmail(bot, [support], msg)
+    server.sendmail(bot, [support1], msg1)
+    server.sendmail(bot, [support2], msg2)
     server.quit()
 
 
@@ -78,7 +88,7 @@ def answer(text):
     return result
 
 
-def get_answer(message):
+def get_answer(sender, message):
     try:
         language = detect(message)
     except Exception:
@@ -91,7 +101,7 @@ def get_answer(message):
     location = validate_location(message)
 
     if email == True:
-        send_email(message)
+        send_email(sender, message)
         result = 'Thank you. Our support will contact to you soon.'
     elif location != None and message.title() and len(message) > 10:
         data = find_near(location)
@@ -118,7 +128,7 @@ class EventListener(StreamListener):
 
             if sender != 'CentrepointME':
                 try:
-                    api.send_direct_message(user=sender, text=get_answer(question))
+                    api.send_direct_message(user=sender, text=get_answer(sender, question))
 
                     print('Sender: ', sender)
                     print('Question: ', question, '\n')
