@@ -97,8 +97,8 @@ def get_answer(sender, message):
     if language == 'ar':
         message = translator.translate(message, dest='en', src='ar').text
 
-    email = validate_email(message)
-    location = validate_location(message)
+    email = None
+    location = None
 
     if email == True:
         send_email(sender, message)
