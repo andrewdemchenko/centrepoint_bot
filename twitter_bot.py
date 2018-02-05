@@ -10,13 +10,16 @@ from tweepy import API
 import json
 import apiai
 import smtplib
+import phonenumbers
 import pandas as pd
 
 from langdetect import detect
+from phonenumbers import carrier
 from googletrans import Translator
 from geopy.distance import vincenty
 from geopy.geocoders import Nominatim
 from validate_email import validate_email
+from phonenumbers.phonenumberutil import number_type
 
 CONSUMER_KEY = 'tvk6XXU4BPhDKbYJ26oeIvfsZ'
 CONSUMER_SECRET = 'KpLX5OKglaBAvLwNt67CDqm6w8W6aBUIW4p1jp23JtwexGsLKV'
@@ -41,21 +44,19 @@ def send_email(sender, email):
         'Twitter: User {}({}) have some questions. Please, address the same at the earliest.'.format(sender, user)
     ])
 
-    msg2 = '\r\n'.join([
-        'From: {}'.format(bot),
-        'To: {}'.format(support1),
-        'Subject: Centrepoint Bot Report',
-        '',
-        'Twitter: User {}({}) have some questions. Please, address the same at the earliest.'.format(sender, user)
-    ])
-
     server = smtplib.SMTP('smtp.gmail.com:587')
     server.ehlo_or_helo_if_needed()
     server.starttls()
     server.login(bot, password)
-    server.sendmail(bot, [support1], msg1)
-    server.sendmail(bot, [support2], msg2)
+    server.sendmail(bot, [support1, support2], msg1)
     server.quit()
+
+
+def mobile_validation(number):
+    try:
+        return carrier._is_mobile(number_type(phonenumbers.parse(number)))
+    except Exception:
+        return False
 
 
 def validate_location(location):
@@ -99,8 +100,9 @@ def get_answer(sender, message):
 
     email = None
     location = None
+    phone = mobile_validation(message)
 
-    if email == True:
+    if phone == True:
         send_email(sender, message)
         result = 'Thank you. Our support will contact to you soon.'
     elif location != None and message.title() and len(message) > 10:
