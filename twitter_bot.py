@@ -31,14 +31,15 @@ ACCESS_TOKEN_SECRET = '0HfKQHqYA2NBi1kZ1km3yyeyoQNxWMcyE0SxYpU8XTNdO'
 def send_email(sender, email):
     bot = 'centrepointbot@gmail.com'
     user = email
-    support1 = 't.malak@ipn.ae'
-    support2 = 'shalini.sharma@landmarkgroup.com'
+    # support1 = 't.malak@ipn.ae'
+    # support2 = 'shalini.sharma@landmarkgroup.com'
+    support3 = 'sachinkumarrjain@gmail.com'
 
     password = 'qwerty678606'
 
     msg1 = '\r\n'.join([
         'From: {}'.format(bot),
-        'To: {}'.format(support1),
+        'To: {}'.format(support3),
         'Subject: Centrepoint Bot Report',
         '',
         'Twitter: User {}({}) have some questions. Please, address the same at the earliest.'.format(sender, user)
@@ -48,7 +49,7 @@ def send_email(sender, email):
     server.ehlo_or_helo_if_needed()
     server.starttls()
     server.login(bot, password)
-    server.sendmail(bot, [support1, support2], msg1)
+    server.sendmail(bot, [support3], msg1)
     server.quit()
 
 
